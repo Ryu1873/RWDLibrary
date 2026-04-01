@@ -61,5 +61,24 @@ ll isqrt(ll n) {
 
 
 int main() {
-    
+    // 便利な標準関数
+    ll x = 100;
+
+    // 整数のpopcountを計算．
+    ll cnt = __builtin_popcount(x);
+
+    // 立っている整数の偶奇を返す．
+    ll par = __builtin_parity(x);
+
+    // 小さい方から何桁目に初めて1が現れるか．
+    ll ffs = __builtin_ffs(x);
+
+    // 左側にいくつ0を埋める必要があるか．
+    ll clz = __builtin_clz(x);
+
+    // 1の位からいくつ0が連なっているか．
+    ll ctz = __builtin_ctz(x);
+
+    // 引数はどれもunsigned int．
+    // undigned long longの場合はllをつける（例：__builtin_popcountll）
 }
