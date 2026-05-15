@@ -1,5 +1,5 @@
 # テンプレート設定方法
-library/template/main.cppを書き換えて以下のコマンドを打つ．
+library/template/main.cppを書き換え，AtCoderディレクトリで以下のコマンドを打つ．
 cp library/template/main.cpp ~/.config/atcoder-cli-nodejs/cpp/
 
 # ログインのセッション再接続
