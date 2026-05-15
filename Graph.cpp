@@ -148,10 +148,29 @@ vector<ll> multiStartBFS01(vector<ll>& starts, vector<vector<pair<ll, ll>>>& G) 
 
 // 木Gの直径を求める．
 // 返り値：{直径，直径の端点1，直径の端点2}．
-tuple<ll, ll, ll> diameter(vector<vector<ll>>& G) {
+tuple<ll, ll, ll> treeDiameter(vector<vector<ll>>& G) {
     vector<ll> dist = BFS(0, G);
     ll max_idx = distance(dist.begin(), max_element(dist.begin(), dist.end()));
     dist = BFS(max_idx, G);
+    ll max_idx2 = distance(dist.begin(), max_element(dist.begin(), dist.end()));
+    return {dist[max_idx2], max_idx, max_idx2};
+}
+
+// 重み付きの木Gの直径を求める．
+// 返り値：{直径，直径の端点1，直径の端点2}．
+tuple<ll, ll, ll> weightedTreeDiameter(vector<vector<pll>>& G) {
+    vector<ll> dist(G.size(), INF);
+    auto dfs = [&](auto&& dfs, ll v, ll p, ll w) -> void {
+        dist[v] = w;
+        for (auto [u, x] : G[v]) {
+            if (u == p) continue;
+            dfs(dfs, u, v, w+x);
+        }
+    };
+    dfs(dfs, 0, -1, 0);
+    ll max_idx = distance(dist.begin(), max_element(dist.begin(), dist.end()));
+    fill(dist.begin(), dist.end(), INF);
+    dfs(dfs, max_idx, -1, 0);
     ll max_idx2 = distance(dist.begin(), max_element(dist.begin(), dist.end()));
     return {dist[max_idx2], max_idx, max_idx2};
 }

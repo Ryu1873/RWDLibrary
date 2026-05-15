@@ -48,18 +48,18 @@ inline bool yn(bool f) { if (f) { yes; return true; } no; return false; }
 // その他便利マクロ
 #define ALL(v) (v).begin(),(v).end()
 #define RALL(v) (v).rbegin(),(v).rend()
-template<class T> ll SIZE(T& v) { return T.size(); }
+template<class T> ll SIZE(T& v) { return v.size(); }
 template<typename Container> void INC(Container& C) { for(const auto& x : C) x++; }
 template<typename Container> void INC2(Container& C) { for(const auto& v : C) INC(v); }
 template<typename Container> void DEC(Container& C) { for(const auto& x : C) x--; }
 template<typename Container> void DEC2(Container& C) { for(const auto& v : C) DEC(v); }
 template<typename Container> ll SUM(const Container& C) { ll ret = 0; for(const auto& x : C) { ret += x; } return ret; }
 template<typename Container> ll SUM2(const Container& C) { ll ret = 0; for(const auto& v : C) { ret += SUM(v); } return ret; }
-template<typename Container> ll MAXID(const Container& C) { return distance(C.bagin(), max_element(C.bagin(), C.end())); }
-template<typename Container> ll MINID(const Container& C) { return distance(C.bagin(), min_element(C.bagin(), C.end())); }
-template<typename Container, class T> ll FINDID(const Container& C, T x) { return distance(C.bagin(), find(C.bagin(), C.end(), x)); }
-template<typename Container, class T> ll LBID(const Container& C, T x) { return distance(C.bagin(), lower_bound(C.bagin(), C.end(), x)); }
-template<typename Container, class T> ll UBID(const Container& C, T x) { return distance(C.bagin(), upper_bound(C.bagin(), C.end(), x)); }
+template<typename Container> ll MAXID(const Container& C) { return distance(C.begin(), max_element(C.begin(), C.end())); }
+template<typename Container> ll MINID(const Container& C) { return distance(C.begin(), min_element(C.begin(), C.end())); }
+template<typename Container, class T> ll FINDID(const Container& C, T x) { return distance(C.begin(), find(C.begin(), C.end(), x)); }
+template<typename Container, class T> ll LBID(const Container& C, T x) { return distance(C.begin(), lower_bound(C.begin(), C.end(), x)); }
+template<typename Container, class T> ll UBID(const Container& C, T x) { return distance(C.begin(), upper_bound(C.begin(), C.end(), x)); }
 template<class T> bool CHMIN(T& a, T b){ if(a>b){ a=b; return true; } return false; }
 template<class T> bool CHMAX(T& a, T b){ if(a<b){ a=b; return true; } return false; }
 template<class... Ts> void SORT(Ts&... xs) { vector v = {xs...}; sort(v.begin(), v.end()); int i = 0; ((xs = v[i++]), ...); }
