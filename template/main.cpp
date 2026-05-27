@@ -49,10 +49,10 @@ inline bool yn(bool f) { if (f) { yes; return true; } no; return false; }
 #define ALL(v) (v).begin(),(v).end()
 #define RALL(v) (v).rbegin(),(v).rend()
 template<class T> ll SIZE(T& v) { return v.size(); }
-template<typename Container> void INC(Container& C) { for(const auto& x : C) x++; }
-template<typename Container> void INC2(Container& C) { for(const auto& v : C) INC(v); }
-template<typename Container> void DEC(Container& C) { for(const auto& x : C) x--; }
-template<typename Container> void DEC2(Container& C) { for(const auto& v : C) DEC(v); }
+template<typename Container> void INC(Container& C) { for(auto& x : C) x++; }
+template<typename Container> void INC2(Container& C) { for(auto& v : C) INC(v); }
+template<typename Container> void DEC(Container& C) { for(auto& x : C) x--; }
+template<typename Container> void DEC2(Container& C) { for(auto& v : C) DEC(v); }
 template<typename Container> ll SUM(const Container& C) { ll ret = 0; for(const auto& x : C) { ret += x; } return ret; }
 template<typename Container> ll SUM2(const Container& C) { ll ret = 0; for(const auto& v : C) { ret += SUM(v); } return ret; }
 template<typename Container> ll MAXID(const Container& C) { return distance(C.begin(), max_element(C.begin(), C.end())); }
