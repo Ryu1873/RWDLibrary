@@ -64,6 +64,8 @@ template<class... Ts> void SORT(Ts&... xs) { vector v = {xs...}; sort(v.begin(),
 template<class T> bool INGRID(T x, T y, T H, T W) { return x >= 0 && x < H && y >= 0 && y < W; }
 template<typename T, typename U> T MOD(T n, U m) { return (n % m + m) % m; }
 template<typename T, typename U> T CEIL(T n, U d) { return (n + d - 1) / d; }
+template <typename Container> auto RLE(const Container& C) { vector<pair<typename Container::value_type, ll>> ret; for (const auto& x : C) { if (ret.empty() || x != ret.back().first) { ret.emplace_back(x, 1); } else { ret.back().second++; } } return ret; }
+template <typename T> vector<T> CUM(const vector<T>& V) { vector<T> ret(V.size()+1, 0); for (ll i = 0; i < V.size(); i++) { ret[i+1] = ret[i] + V[i]; } return ret; }
 
 // 定数
 const ll INF = 4'000'000'000'000'000'000LL;
@@ -77,7 +79,9 @@ const bool IS_MULTI_CASE = false;
 
 
 void solve() {
-    
+    vll A = {1, 2, 3};
+    vll C = CUM(A);
+    prvec(C);
 }
 
 
