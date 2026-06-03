@@ -48,27 +48,29 @@ inline bool yn(bool f) { if (f) { yes; return true; } no; return false; }
 // その他便利マクロ
 #define ALL(v) (v).begin(),(v).end()
 #define RALL(v) (v).rbegin(),(v).rend()
-template<class T> ll SIZE(T& v) { return v.size(); }
-template<typename Container> void INC(Container& C) { for(auto& x : C) x++; }
-template<typename Container> void INC2(Container& C) { for(auto& v : C) INC(v); }
-template<typename Container> void DEC(Container& C) { for(auto& x : C) x--; }
-template<typename Container> void DEC2(Container& C) { for(auto& v : C) DEC(v); }
-template<typename Container> ll SUM(const Container& C) { ll ret = 0; for(const auto& x : C) { ret += x; } return ret; }
-template<typename Container> ll SUM2(const Container& C) { ll ret = 0; for(const auto& v : C) { ret += SUM(v); } return ret; }
+template<class T> ll SZ(T& v) { return v.size(); }
+template<typename T, typename U> void ADD(T& v, const U& x) { if constexpr (ranges::range<T>) { for (auto& e : v) { ADD(e, x); } } else { v += x; } }
+template<typename Container> void INC(Container& C) { ADD(C, 1); }
+template<typename Container> void DEC(Container& C) { ADD(C, -1); }
+template<typename T> auto SUM(const T& v) { if constexpr (ranges::range<T>) { decltype(SUM(*begin(v))) ret = 0; for (const auto& e : v) { ret += SUM(e); } return ret; } else { return v; } }
 template<typename Container> ll MAXID(const Container& C) { return distance(C.begin(), max_element(C.begin(), C.end())); }
 template<typename Container> ll MINID(const Container& C) { return distance(C.begin(), min_element(C.begin(), C.end())); }
 template<typename Container, class T> ll FINDID(const Container& C, T x) { return distance(C.begin(), find(C.begin(), C.end(), x)); }
 template<typename Container, class T> ll LBID(const Container& C, T x) { return distance(C.begin(), lower_bound(C.begin(), C.end(), x)); }
 template<typename Container, class T> ll UBID(const Container& C, T x) { return distance(C.begin(), upper_bound(C.begin(), C.end(), x)); }
-template<class T> bool CHMIN(T& a, T b){ if(a>b){ a=b; return true; } return false; }
-template<class T> bool CHMAX(T& a, T b){ if(a<b){ a=b; return true; } return false; }
+template<typename T, typename U> bool CHMIN(T& a, U b){ if(a>b){ a=b; return true; } return false; }
+template<typename T, typename U> bool CHMAX(T& a, U b){ if(a<b){ a=b; return true; } return false; }
 template<class... Ts> void SORT(Ts&... xs) { vector v = {xs...}; sort(v.begin(), v.end()); int i = 0; ((xs = v[i++]), ...); }
 template<class T> bool INGRID(T x, T y, T H, T W) { return x >= 0 && x < H && y >= 0 && y < W; }
+template<typename T, typename U> T MOD(T n, U m) { return (n % m + m) % m; }
+template<typename T, typename U> T CEIL(T n, U d) { return (n + d - 1) / d; }
 
 // 定数
 const ll INF = 4'000'000'000'000'000'000LL;
 const ll DI[] = {1, -1, 0, 0};
 const ll DJ[] = {0, 0, 1, -1};
+const ll DI8[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+const ll DJ8[] = {-1, 0, 1, -1, 1, -1, 0, 1};
 const string DIR = "DURL";
 
 const bool IS_MULTI_CASE = false;
