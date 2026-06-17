@@ -79,9 +79,7 @@ const bool IS_MULTI_CASE = false;
 
 
 void solve() {
-    vll A = {1, 2, 3};
-    vll C = CUM(A);
-    prvec(C);
+    
 }
 
 

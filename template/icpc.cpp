@@ -70,8 +70,8 @@ const ll DJ8[] = {-1, 0, 1, -1, 1, -1, 0, 1};
 const string DIR = "DURL";
 
 
-void solve(ll n) {
-
+void solve(ll N) {
+    
 }
 
 

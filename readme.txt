@@ -12,4 +12,4 @@ cp library/template/main.cpp ~/.config/atcoder-cli-nodejs/cpp/
 
 # コマンド
 ts <1> カレントディレクトリ直下のディレクトリ<1>にあるmain.cppをコンパイル→テストケースをテスト．
-mk ABCxxx 新しいディレクトリを作り，そこに移動．
+mk <コンテスト名> 新しいディレクトリを作り，そこに移動．
