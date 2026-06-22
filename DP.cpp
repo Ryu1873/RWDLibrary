@@ -40,7 +40,6 @@ using mint = modint998244353;
 
 
 // 数列のLIS（最長増加部分列）の長さを求める．
-// 最終的にdpの中身がLIS（の1つ）になっている．
 ll LIS(vll v) {
     ll N = v.size();
     vll dp(0);

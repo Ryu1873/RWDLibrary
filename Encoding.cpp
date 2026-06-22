@@ -3,22 +3,22 @@ using namespace std;
 #define ll long long
 const ll INF = 1'000'000'000'000'000'000LL;
 
-// string,vectorなどのコンテナを入力として，ランレングス圧縮を行う．
-// 返り値は{要素，長さ}を要素とするvector．
-template <typename Container>
-auto RLE(const Container& c) {
-    using T = typename Container::value_type;
-    vector<pair<T, ll>> ret;
-    for (const auto& x : c) {
-        if (ret.empty() || x != ret.back().first) {
-            ret.emplace_back(x, 1);
-        } else {
-            ret.back().second++;
-        }
+// 座標圧縮を行う．
+// 計算量はO(NlogN)．
+template<typename T>
+vector<ll> Compression(vector<T> A) {
+    vector<T> A_copy = A;
+    sort(A_copy.begin(), A_copy.end());
+    A_copy.erase(unique(A_copy.begin(), A_copy.end()), A_copy.end());
+    for (ll i = 0; i < (ll)A.size(); i++) {
+        A[i] = distance(A_copy.begin(), lower_bound(A_copy.begin(), A_copy.end(), A[i]));
     }
-    return ret;
+    return A;
 }
 
+
 int main() {
-    
+    vector<ll> A = {1, 8, 5, 5 ,3, 1};
+    A = Compression(A);
+    for (ll i = 0; i < 6; i++) cout << A[i] << endl;
 }
