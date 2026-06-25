@@ -30,8 +30,8 @@ using vtll4 = vector<tll4>; using vvtll4 = vector<vtll4>; using vvvtll4 = vector
 #define RREP3(i, m, n) for(ll i = (m) - 1; i >= (n); i--)
 #define RREP4(i, m, n, d) for(ll i = (m) - 1; i >= (n); i -= (d))
 #define OVERLOAD4(a, b, c, d, e, ...) e
-#define rep(...) OVERLOAD4(__VA_ARGS__, rep4, rep3, rep2, rep1)(__VA_ARGS__)
-#define rrep(...) OVERLOAD4(__VA_ARGS__, rrep4, rrep3, rrep2, rrep1)(__VA_ARGS__)
+#define rep(...) OVERLOAD4(__VA_ARGS__, REP4, REP3, REP2, REP1)(__VA_ARGS__)
+#define rrep(...) OVERLOAD4(__VA_ARGS__, RREP4, RREP3, RREP2, RREP1)(__VA_ARGS__)
 
 // 入力
 template<class T> void CIN(T& x) { cin >> x; }
@@ -72,6 +72,10 @@ template<typename... Ts> void SORT(Ts&... xs) { vector v = {xs...}; sort(v.begin
 template<typename T> bool INGRID(T x, T y, T H, T W) { return x >= 0 && x < H && y >= 0 && y < W; }
 template<typename T, typename U> T MOD(T n, U m) { return (n % m + m) % m; }
 template<typename T, typename U> T CEIL(T n, U d) { return (n + d - 1) / d; }
+template<typename T, typename U> T POW(T x, T n) { assert(n >= 0); T ret = 1; while(n > 0) { if (n % 2 == 1) { ret = ret * x; } x *= x; n /= 2; } return ret; }
+template<typename T> T SQRT(T n) { T x = (T)sqrt(n); while((x + 1) * (x + 1) <= n) { x++; } while(x * x > n) { x--; } return x; }
+template<typename T> T EDIST(T x1, T y1, T x2, T y2) { return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2); }
+template<typename T> T MDIST(T x1, T y1, T x2, T y2) { return abs(x1 - x2) + abs(y1 - y2); }
 template<typename Container> auto RLE(const Container& C) { vector<pair<typename Container::value_type, ll>> ret; for (const auto& x : C) { if (ret.empty() || x != ret.back().first) { ret.emplace_back(x, 1); } else { ret.back().second++; } } return ret; }
 template<typename T> vector<T> CUM(const vector<T>& V) { vector<T> ret(V.size()+1, 0); for (ll i = 0; i < V.size(); i++) { ret[i+1] = ret[i] + V[i]; } return ret; }
 
