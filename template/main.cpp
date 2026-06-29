@@ -52,7 +52,15 @@ template<typename Container> void PRC(const Container& c) { bool first = true; f
 #define NO PR(YESNO_STRINGS.second)
 bool YN(bool f) { if (f) { YES; return true; } NO; return false; }
 
-// その他便利マクロ
+// 整数系マクロ
+template<typename T, typename U> T MOD(T n, U m) { return (n % m + m) % m; }
+template<typename T> bool ODD(T n) { return MOD(n, 2) == 1; }
+template<typename T> bool EVEN(T n) { return MOD(n, 2) == 0; }
+template<typename T, typename U> T CEIL(T n, U d) { return (n + d - 1) / d; }
+template<typename T, typename U> T POW(T x, T n) { assert(n >= 0); T ret = 1; while(n > 0) { if (n % 2 == 1) { ret = ret * x; } x *= x; n /= 2; } return ret; }
+template<typename T> T SQRT(T n) { T x = (T)sqrt(n); while((x + 1) * (x + 1) <= n) { x++; } while(x * x > n) { x--; } return x; }
+
+// コンテナ系マクロ
 #define ALL(v) (v).begin(),(v).end()
 #define RALL(v) (v).rbegin(),(v).rend()
 template<typename T> ll SZ(T& v) { return v.size(); }
@@ -66,18 +74,18 @@ template<typename Container> ll MINID(const Container& C) { return distance(C.be
 template<typename Container, class T> ll FINDID(const Container& C, T x) { return distance(C.begin(), find(C.begin(), C.end(), x)); }
 template<typename Container, class T> ll LBID(const Container& C, T x) { return distance(C.begin(), lower_bound(C.begin(), C.end(), x)); }
 template<typename Container, class T> ll UBID(const Container& C, T x) { return distance(C.begin(), upper_bound(C.begin(), C.end(), x)); }
+template<typename Container> auto RLE(const Container& C) { vector<pair<typename Container::value_type, ll>> ret; for (const auto& x : C) { if (ret.empty() || x != ret.back().first) { ret.emplace_back(x, 1); } else { ret.back().second++; } } return ret; }
+template<typename T> vector<T> CUM(const vector<T>& V) { vector<T> ret(V.size()+1, 0); for (ll i = 0; i < (ll)V.size(); i++) { ret[i+1] = ret[i] + V[i]; } return ret; }
+
+// 幾何系マクロ
+template<typename T> bool INGRID(T x, T y, T H, T W) { return x >= 0 && x < H && y >= 0 && y < W; }
+template<typename T> T EDIST(T x1, T y1, T x2, T y2) { return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2); }
+template<typename T> T MDIST(T x1, T y1, T x2, T y2) { return abs(x1 - x2) + abs(y1 - y2); }
+
+// その他便利マクロ
 template<typename T, typename U> bool CHMIN(T& a, U b){ if(a>b){ a=b; return true; } return false; }
 template<typename T, typename U> bool CHMAX(T& a, U b){ if(a<b){ a=b; return true; } return false; }
 template<typename... Ts> void SORT(Ts&... xs) { vector v = {xs...}; sort(v.begin(), v.end()); int i = 0; ((xs = v[i++]), ...); }
-template<typename T> bool INGRID(T x, T y, T H, T W) { return x >= 0 && x < H && y >= 0 && y < W; }
-template<typename T, typename U> T MOD(T n, U m) { return (n % m + m) % m; }
-template<typename T, typename U> T CEIL(T n, U d) { return (n + d - 1) / d; }
-template<typename T, typename U> T POW(T x, T n) { assert(n >= 0); T ret = 1; while(n > 0) { if (n % 2 == 1) { ret = ret * x; } x *= x; n /= 2; } return ret; }
-template<typename T> T SQRT(T n) { T x = (T)sqrt(n); while((x + 1) * (x + 1) <= n) { x++; } while(x * x > n) { x--; } return x; }
-template<typename T> T EDIST(T x1, T y1, T x2, T y2) { return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2); }
-template<typename T> T MDIST(T x1, T y1, T x2, T y2) { return abs(x1 - x2) + abs(y1 - y2); }
-template<typename Container> auto RLE(const Container& C) { vector<pair<typename Container::value_type, ll>> ret; for (const auto& x : C) { if (ret.empty() || x != ret.back().first) { ret.emplace_back(x, 1); } else { ret.back().second++; } } return ret; }
-template<typename T> vector<T> CUM(const vector<T>& V) { vector<T> ret(V.size()+1, 0); for (ll i = 0; i < V.size(); i++) { ret[i+1] = ret[i] + V[i]; } return ret; }
 
 // 定数
 const ll INF = 4'000'000'000'000'000'000LL;
