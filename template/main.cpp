@@ -59,6 +59,10 @@ template<typename T> bool EVEN(T n) { return MOD(n, 2) == 0; }
 template<typename T, typename U> T CEIL(T n, U d) { return (n + d - 1) / d; }
 template<typename T, typename U> T POW(T x, T n) { assert(n >= 0); T ret = 1; while(n > 0) { if (n % 2 == 1) { ret = ret * x; } x *= x; n /= 2; } return ret; }
 template<typename T> T SQRT(T n) { T x = (T)sqrt(n); while((x + 1) * (x + 1) <= n) { x++; } while(x * x > n) { x--; } return x; }
+template<typename T, typename U> bool BIT(T n, U i) { return (n >> i) & 1; }
+template<typename T> ll POPCNT(T n) { return popcount((unsigned long long)n); }
+template<typename T> ll DIGSZ(T n) { return to_string(n).size(); }
+
 
 // コンテナ系マクロ
 #define ALL(v) (v).begin(),(v).end()

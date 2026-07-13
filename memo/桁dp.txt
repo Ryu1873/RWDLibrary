@@ -1,0 +1,28 @@
+桁dpテンプレート(leading-0考慮あり)
+例：ABC465-E Digit Circus
+
+vvmi dp(3, vmi((1 << 10), 0));
+ll tm = 0, tb = 0;
+rep(d, N) {
+    ll n = S[d] - '0';
+    vvmi ep(3, vmi((1 << 10), 0));
+    rep(i, 10) {
+        // 新しい桁の爆誕
+        if (d > 0 && i > 0) ep[MOD(i, 3)][1 << i]++;
+        // 通常の遷移
+        rep(m, 3) {
+            rep(b, (1 << 10)) {
+                ep[MOD(m + i, 3)][b | (1 << i)] += dp[m][b];
+            }
+        }
+        // tightからの遷移(最初の桁の0のケースだけ注意)
+        if (i < n && !(d == 0 && i == 0)) {
+            ep[MOD(tm + i, 3)][tb | (1 << i)]++;
+        }
+    }
+    dp = move(ep);
+    // tightの更新
+    tm = MOD(tm + n, 3), tb = (tb | (1 << n));
+}
+// tightを考慮
+dp[tm][tb]++;
