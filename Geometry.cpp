@@ -36,29 +36,67 @@ template<class T> inline bool chmax(T& a, T b){ if(a<b){ a=b; return true; } ret
 const ll INF = 1'000'000'000'000'000'000LL;
 using mint = modint998244353;
 
-// xy平面上の格子点2点を通る直線をax+by+c=0の形で取得する．
-tuple<ll, ll, ll> get_line(ll x1, ll y1, ll x2, ll y2) {
-    ll a = y1 - y2;
-    ll b = x2 - x1;
-    ll c = -a * x1 - b * y1;
+// 直線を扱う構造体．
+// コンストラクタ：Line line(x1, y1, x2, y2):2点を通る直線．
+//              Line line(a, b, c)；直接係数を代入．
+//順序：傾き→y切片→x切片の順に比較．y軸に平行な直線は傾き無限大とする．
+//is_parallel(other)：2直線が平行かどうか判定．
+//is_perpendicular(other)：2直線が直交しているかどうか判定．
+struct Line {
+private:
+    ll a, b, c;
 
-    // 2点が重なっているときの例外処理．
-    if (a == 0 && b == 0) return {0, 0, 0}; 
-
-    // 正規化．
-    ll g = gcd(abs(a), gcd(abs(b), abs(c)));
-    a /= g;
-    b /= g;
-    c /= g;
-
-    // 符号の一意化．
-    if (a < 0 || (a == 0 && b < 0)) {
-        a = -a;
-        b = -b;
-        c = -c;
+    void normalize() {
+        ll g = gcd(abs(a), gcd(abs(b), abs(c)));
+        a /= g, b /= g, c /= g;
+        if (a < 0 || (a == 0 && b < 0)) {
+            a *= -1, b *= -1, c *= -1;
+        }
     }
 
-    return {a, b, c};
+public:
+    Line(ll a_, ll b_, ll c_) : a(a_), b(b_), c(c_) {
+        normalize();
+    }
+    Line(ll x1, ll y1, ll x2, ll y2) {
+        assert(x1 != x2 || y1 != y2);
+        a = y1 - y2;
+        b = x2 - x1;
+        c = -a * x1 - b * y1;
+        normalize();
+    }
+
+    bool operator == (Line& other) { return a == other.a && b == other.b && c == other.c; }
+    bool operator < (Line& other) {
+        if (b == 0 || other.b == 0) {
+            return (b == 0 && other.b == 0) ? (c * other.a > other.c * a) : (b != 0);
+        } else if (a * other.b == other.a * b) {
+            return c * other.b > other.c * b;
+        } else {
+            return a * other.b > other.a * b;
+        }
+    }
+    bool operator > (Line& other) { return other > *this; }
+    bool operator <= (Line& other) { return !(other < *this); }
+    bool operator >= (Line& other) { return !(*this < other); }
+    bool operator != (Line& other) { return !(*this == other); }
+
+    bool is_parallel(Line& other) {
+        return a * other.b == other.a * b;
+    }
+
+    bool is_perpendicular(Line& other) {
+        return a * other.a + b * other.b == 0;
+    }
+};
+
+
+// 2点の垂直二等分線を求める．
+Line perpendicular_bisector(ll x1, ll y1, ll x2, ll y2) {
+    ll a = 2 * (x2 - x1);
+    ll b = 2 * (y2 - y1);
+    ll c = -(x2 * x2 + y2 * y2 - x1 * x1 - y1 * y1);
+    return Line(a, b, c);
 }
 
 

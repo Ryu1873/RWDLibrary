@@ -56,7 +56,8 @@ bool YN(bool f) { if (f) { YES; return true; } NO; return false; }
 template<typename T, typename U> T MOD(T n, U m) { return (n % m + m) % m; }
 template<typename T> bool ODD(T n) { return MOD(n, 2) == 1; }
 template<typename T> bool EVEN(T n) { return MOD(n, 2) == 0; }
-template<typename T, typename U> T CEIL(T n, U d) { return (n + d - 1) / d; }
+template<typename T, typename U> T CEIL(T n, U d) { return d < 0 ? CEIL(-n, -d) : (n >= 0 ? (n + d - 1) / d : n / d); }
+template<typename T, typename U> T FLOOR(T n, U d) { return d < 0 ? FLOOR(-n, -d) : (n >= 0 ? n / d : (n + d - 1) / d); }
 template<typename T, typename U> T POW(T x, T n) { assert(n >= 0); T ret = 1; while(n > 0) { if (n % 2 == 1) { ret = ret * x; } x *= x; n /= 2; } return ret; }
 template<typename T> T SQRT(T n) { T x = (T)sqrt(n); while((x + 1) * (x + 1) <= n) { x++; } while(x * x > n) { x--; } return x; }
 template<typename T, typename U> bool BIT(T n, U i) { return (n >> i) & 1; }
