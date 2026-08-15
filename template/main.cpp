@@ -68,7 +68,7 @@ template<typename T> ll DIGSZ(T n) { return to_string(n).size(); }
 // コンテナ系マクロ
 #define ALL(v) (v).begin(),(v).end()
 #define RALL(v) (v).rbegin(),(v).rend()
-template<typename T> ll SZ(T& v) { return v.size(); }
+#define SZ(v) (ll)(v).size()
 template<typename T, typename U> void ADD(T& v, const U& x) { if constexpr (ranges::range<T>) { for (auto& e : v) { ADD(e, x); } } else { v += x; } }
 template<typename Container> void INC(Container& C) { ADD(C, 1); }
 template<typename Container> void DEC(Container& C) { ADD(C, -1); }
@@ -94,11 +94,11 @@ template<typename... Ts> void SORT(Ts&... xs) { vector v = {xs...}; sort(v.begin
 
 // 定数
 const ll INF = 4'000'000'000'000'000'000LL;
-const ll DI[] = {1, -1, 0, 0};
-const ll DJ[] = {0, 0, 1, -1};
-const ll DI8[] = {-1, -1, -1, 0, 0, 1, 1, 1};
-const ll DJ8[] = {-1, 0, 1, -1, 1, -1, 0, 1};
-const string DIR = "DURL";
+const ll DI[] = {-1, 0, 1, 0};
+const ll DJ[] = {0, 1, 0, -1};
+const ll DI8[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+const ll DJ8[] = {0, 1, 1, 1, 0, -1, -1, -1};
+const string DIR = "URDL";
 
 const bool IS_MULTI_CASE = false;
 
@@ -111,6 +111,7 @@ void solve() {
 int main() {
     ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
+    cout << fixed << setprecision(15);
 
     ll T = 1;
     if (IS_MULTI_CASE) cin >> T;

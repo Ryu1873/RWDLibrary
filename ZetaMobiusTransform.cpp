@@ -8,7 +8,7 @@ const ll INF = 1'000'000'000'000'000'000LL;
 // Aは２冪である必要がある．
 // Aの要素数を2^nとして，計算量はO(n・2^n)．
 template<typename T>
-vector<T> subsetZeta(vector<T> A) {
+vector<T> subsetZeta(vector<T>& A) {
     ll N = 1;
     while((1ll << N) < A.size()) N++;
     assert((1ll << N) == A.size());
@@ -26,7 +26,7 @@ vector<T> subsetZeta(vector<T> A) {
 // Aは２冪である必要がある．
 // Aの要素数を2^nとして，計算量はO(n・2^n)．
 template<typename T>
-vector<T> subsetMobius(vector<T> A) {
+vector<T> subsetMobius(vector<T>& A) {
     ll N = 1;
     while((1ll << N) < A.size()) N++;
     assert((1ll << N) == A.size());
@@ -44,7 +44,7 @@ vector<T> subsetMobius(vector<T> A) {
 // Aは２冪である必要がある．
 // Aの要素数を2^nとして，計算量はO(n・2^n)．
 template<typename T>
-vector<T> supersetZeta(vector<T> A) {
+vector<T> supersetZeta(vector<T>& A) {
     ll N = 1;
     while((1ll << N) < A.size()) N++;
     assert((1ll << N) == A.size());
@@ -62,7 +62,7 @@ vector<T> supersetZeta(vector<T> A) {
 // Aは２冪である必要がある．
 // Aの要素数を2^nとして，計算量はO(n・2^n)．
 template<typename T>
-vector<T> supersetMobius(vector<T> A) {
+vector<T> supersetMobius(vector<T>& A) {
     ll N = 1;
     while((1ll << N) < A.size()) N++;
     assert((1ll << N) == A.size());
@@ -100,13 +100,13 @@ private:
                 break;
             }
             ret += p[i];
-            if (i < D - 1) ret *= len[i];
+            if (i < D - 1) ret *= len[i+1];
         }
         return ret;
     }
 
 public:
-    MultidimensionalCumulativeSum(vector<ll>& len_) : D(len_.size()), len(len_) { 
+    MultidimensionalCumulativeSum(vector<ll> len_) : D(len_.size()), len(len_) { 
         ll tmp = 1;
         for (ll i = 0; i < D; i++) {
             tmp *= len[i];
@@ -114,12 +114,12 @@ public:
         dat.assign(tmp, 0);
     }
 
-    void add(vector<ll>& p, T x) {
+    void add(vector<ll> p, T x) {
         ll tmp = encode(p);
         if (tmp != -1) dat[tmp] += x;
     }
 
-    void range_add(vector<ll>& l, vector<ll>& r, T x) {
+    void range_add(vector<ll> l, vector<ll> r, T x) {
         add(l, x);
         add(r, -x);
     }
@@ -128,19 +128,19 @@ public:
         ll tmp = 1;
         for (ll d = 0; d < D; d++) {
             for (ll i = 0; i < (ll)dat.size(); i++) {
-                if ((i / tmp) % len[d] == 0) continue;
+                if ((i / tmp) % (d < D-1 ? len[d+1] : INF) == 0) continue;
                 dat[i] += dat[i - tmp];
             }
-            tmp *= len[d];
+            if (d < D - 1) tmp *= len[d+1];
         }
     }
 
-    T get(vector<ll>& p) {
+    T get(vector<ll> p) {
         ll tmp = encode(p);
         return tmp == -1 ? 0 : dat[tmp];
     }
 
-    T sum(vector<ll>& l, vector<ll>& r) {
+    T sum(vector<ll> l, vector<ll> r) {
         assert(l.size() == D && r.size() == D);
         T ret = 0;
         for (ll b = 0; b < (1 << D); b++) {
