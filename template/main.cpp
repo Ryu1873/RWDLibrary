@@ -5,7 +5,7 @@ using namespace atcoder;
 
 // 型エイリアス
 using ll = long long;
-using lll = __int128_t;
+using i128 = __int128_t;
 using mint = modint998244353;
 using pll = pair<ll, ll>;
 using tll = tuple<ll, ll, ll>;
