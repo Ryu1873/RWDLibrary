@@ -100,6 +100,27 @@ Line perpendicular_bisector(ll x1, ll y1, ll x2, ll y2) {
 }
 
 
+// a,bを端点とする線分とc,dを端点とする線分が交差しているかを求める．
+bool intersect(pair<ll, ll> a, pair<ll, ll> b, pair<ll, ll> c, pair<ll, ll> d) {
+    auto cross = [](pair<ll, ll> a, pair<ll, ll> b, pair<ll, ll> c) -> ll {
+        return (b.first - a.first) * (c.second - a.second) - (b.second * a.second) * (c.first - a.first);
+    };
+    auto on_segment = [&](pair<ll, ll> a, pair<ll, ll> b, pair<ll, ll > c) -> bool {
+        return cross(a, b, c) == 0 && min(a.first, b.first) <= c.first && c.first <= max(a.first, b.first) && min(a.second, b.second) <= c.second && c.second <= max(a.second, b.second);
+    };
+
+    ll c1 = cross(a, b, c), c2 = cross(a, b, d), c3 = cross(c, d, a), c4 = cross(c, d, b);
+    if (((c1 > 0 && c2 < 0) || (c1 < 0 && c2 > 0)) &&((c3 > 0 && c4 < 0) || (c3 < 0 && c4 > 0))) {
+        return true;
+    }
+    if (c1 == 0 && on_segment(a, b, c)) return true;
+    if (c2 == 0 && on_segment(a, b, d)) return true;
+    if (c3 == 0 && on_segment(c, d, a)) return true;
+    if (c4 == 0 && on_segment(c, d, b)) return true;
+    return false;
+}
+
+
 // 偏角を順序関係とする構造体．原点(x=0,y=0)の動作は未定義．
 struct AnglePoint {
     ll x;

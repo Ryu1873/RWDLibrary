@@ -33,6 +33,22 @@ template<class T> inline bool chmax(T& a, T b){ if(a<b){ a=b; return true; } ret
 const ll INF = 1'000'000'000'000'000'000LL;
 
 
+// 約数全列挙(O(√N))
+vector<ll> divisors(ll N) {
+    vector<ll> ret;
+    for (ll i = 1; i*i <= N; i++) {
+        if (N % i == 0) {
+            ret.push_back(i);
+            if (i != N / i) {
+                ret.push_back(N / i);
+            }
+        }
+    }
+    sort(ret.begin(), ret.end());
+    return ret;
+}
+
+
 // エラトステネスの篩．N以下の素数判定をO(NloglogN)時間で行う．
 vector<bool> isPrimes(ll N) {
     vector<bool> ret(N+1, true);

@@ -17,9 +17,10 @@ const ll INF = 1'000'000'000'000'000'000LL;
 // nCrを計算．r < 0やn < rなら0を返す．O(1)もしくは最大でO(n+log(MOD))．
 template<class T>
 struct Combination {
-    vector<T> fact_v;
-    vector<T> finv_v;
+private:
+    vector<T> fact_v, finv_v;
 
+public:
     Combination() {
         fact_v.push_back(1);
         finv_v.push_back(0);
@@ -27,7 +28,7 @@ struct Combination {
 
     T fact(ll n) {
         assert(n >= 0);
-        while(fact_v.size() <= n) {
+        while((ll)fact_v.size() <= n) {
             fact_v.push_back(fact_v.back() * fact_v.size());
         }
         return fact_v[n];
@@ -35,7 +36,7 @@ struct Combination {
 
     T finv(ll n) {
         assert(n >= 0);
-        while(finv_v.size() <= n) {
+        while((ll)finv_v.size() <= n) {
             finv_v.push_back(0);
         }
         if (finv_v[n] == 0) {
