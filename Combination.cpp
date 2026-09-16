@@ -40,7 +40,7 @@ public:
             finv_v.push_back(0);
         }
         if (finv_v[n] == 0) {
-            finv_v[n] = fact(n).inv();
+            finv_v[n] = 1/ fact(n);
         }
         return finv_v[n];
     }

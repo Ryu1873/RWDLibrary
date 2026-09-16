@@ -56,6 +56,10 @@ template<class T, class... Ts> void CIN(T& x, Ts&... xs) { cin >> x; CIN(xs...);
 #define VVEC3(type, name, N) VVEC4(type, name, N, N)
 #define VVEC(...) OVERLOAD4(__VA_ARGS__, VVEC4, VVEC3)(__VA_ARGS__)
 #define VVLL(...) VVEC(ll, __VA_ARGS__)
+#define UGRAPH(G, N, M) vector<vector<ll>> G(N); for (ll i = 0; i < M; i++) { ll u, v; cin >> u >> v; u--; v--; G[u].push_back(v); G[v].push_back(u); }
+#define DGRAPH(G, N, M) vector<vector<ll>> G(N); for (ll i = 0; i < M; i++) { ll u, v; cin >> u >> v; u--; v--; G[u].push_back(v); }
+#define WUGRAPH(G, N, M) vector<vector<pair<ll, ll>>> G(N); for (ll i = 0; i < M; i++) { ll u, v, w; cin >> u >> v >> w; u--; v--; G[u].emplace_back(w, v); G[v].emplace_back(w, u); }
+#define WDGRAPH(G, N, M) vector<vector<pair<ll, ll>>> G(N); for (ll i = 0; i < M; i++) { ll u, v, w; cin >> u >> v >> w; u--; v--; G[u].emplace_back(w, v); }
 
 // 出力
 const pair<string, string> YESNO_STRINGS = {"Yes", "No"};
@@ -71,8 +75,10 @@ template<typename T, typename U> T MOD(T n, U m) { return (n % m + m) % m; }
 template<typename T> bool ODD(T n) { return MOD(n, 2) == 1; }
 template<typename T> bool EVEN(T n) { return MOD(n, 2) == 0; }
 template<typename T, typename U> T CEIL(T n, U d) { return d < 0 ? CEIL(-n, -d) : (n >= 0 ? (n + d - 1) / d : n / d); }
-template<typename T, typename U> T FLOOR(T n, U d) { return d < 0 ? FLOOR(-n, -d) : (n >= 0 ? n / d : (n + d - 1) / d); }
+template<typename T, typename U> T FLOOR(T n, U d) { return d < 0 ? FLOOR(-n, -d) : (n >= 0 ? n / d : (n - d + 1) / d); }
 template<typename T, typename U> T POW(T x, U n) { assert(n >= 0); T ret = 1; while(n > 0) { if (n % 2 == 1) { ret = ret * x; } x *= x; n /= 2; } return ret; }
+template<typename T, typename U> T FLOG(U n, T x) { T ret = -1, cur = 1; while(cur <= x) { cur *= n; ret++; } return ret; }
+template<typename T, typename U> T CLOG(U n, T x) { T ret = 0, cur = 1; while(cur < x) { cur *= n; ret++; } return ret; }
 template<typename T> T SQRT(T n) { T x = (T)sqrt(n); while((x + 1) * (x + 1) <= n) { x++; } while(x * x > n) { x--; } return x; }
 template<typename T, typename U> bool BIT(T n, U i) { return (n >> i) & 1; }
 template<typename T> ll POPCNT(T n) { return popcount((unsigned long long)n); }
@@ -95,6 +101,7 @@ template<typename Container, class T> ll LBID(const Container& C, T x) { return 
 template<typename Container, class T> ll UBID(const Container& C, T x) { return distance(C.begin(), upper_bound(C.begin(), C.end(), x)); }
 template<typename Container> auto RLE(const Container& C) { vector<pair<typename Container::value_type, ll>> ret; for (const auto& x : C) { if (ret.empty() || x != ret.back().first) { ret.emplace_back(x, 1); } else { ret.back().second++; } } return ret; }
 template<typename T> vector<T> CUM(const vector<T>& V) { vector<T> ret(V.size()+1, 0); for (ll i = 0; i < (ll)V.size(); i++) { ret[i+1] = ret[i] + V[i]; } return ret; }
+template<typename C> bool ISPAL(C& V) { for (ll i = 0; i < (ll)V.size() / 2; i++) { if (V[i] != V[(ll)V.size() - 1 - i]) return false; } return true; }
 
 // 幾何系マクロ
 template<typename T> bool INGRID(T x, T y, T H, T W) { return x >= 0 && x < H && y >= 0 && y < W; }

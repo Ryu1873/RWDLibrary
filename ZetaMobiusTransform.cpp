@@ -80,12 +80,12 @@ vector<T> supersetMobius(vector<T>& A) {
 // コンストラクタ：MultidimentionalCumulativeSum<T> S(len); lenには各次元の長さを入れる．初期値は全て0．
 // add(p, x):座標pにxを足す．
 // range_add(l, r, x):いもす法用．(l,rは半開区間)(未完成)
-// calc():累積和の計算を行う．O(DN)くらい．
 // get(p):いもす法用．[0, p]の値を取得．
 // sum(l, r):[l,r)の和を取得．O(D2^D)くらい．
 template<typename T> 
 struct MultidimensionalCumulativeSum {
 private:
+    bool calced = false;
     ll D;
     vector<ll> len;
     vector<T> dat;
@@ -105,25 +105,6 @@ private:
         return ret;
     }
 
-public:
-    MultidimensionalCumulativeSum(vector<ll> len_) : D(len_.size()), len(len_) { 
-        ll tmp = 1;
-        for (ll i = 0; i < D; i++) {
-            tmp *= len[i];
-        }
-        dat.assign(tmp, 0);
-    }
-
-    void add(vector<ll> p, T x) {
-        ll tmp = encode(p);
-        if (tmp != -1) dat[tmp] += x;
-    }
-
-    void range_add(vector<ll> l, vector<ll> r, T x) {
-        add(l, x);
-        add(r, -x);
-    }
-
     void calc() {
         ll tmp = 1;
         for (ll d = 0; d < D; d++) {
@@ -135,13 +116,42 @@ public:
         }
     }
 
+public:
+    MultidimensionalCumulativeSum(vector<ll> len_) : D(len_.size()), len(len_) { 
+        ll tmp = 1;
+        for (ll i = 0; i < D; i++) {
+            tmp *= len[i];
+        }
+        dat.assign(tmp, 0);
+    }
+
+    void add(vector<ll> p, T x) {
+        assert(!calced);
+        ll tmp = encode(p);
+        if (tmp != -1) dat[tmp] += x;
+    }
+
+    void range_add(vector<ll> l, vector<ll> r, T x) {
+        assert(!calced);
+        add(l, x);
+        add(r, -x);
+    }
+
     T get(vector<ll> p) {
+        if (!calced) {
+            calced = true;
+            calc();
+        }
         ll tmp = encode(p);
         return tmp == -1 ? 0 : dat[tmp];
     }
 
     T sum(vector<ll> l, vector<ll> r) {
         assert(l.size() == D && r.size() == D);
+        if (!calced) {
+            calced = true;
+            calc();
+        }
         T ret = 0;
         for (ll b = 0; b < (1 << D); b++) {
             vector<ll> v(D);

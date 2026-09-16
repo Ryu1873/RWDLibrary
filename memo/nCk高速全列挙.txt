@@ -1,0 +1,11 @@
+Gosper's Hack
+popcountがKである長さNのbit列を全列挙する．
+
+for (ll b = (1ll << K) - 1; b < (1ll << N); ) {
+    
+    // 処理
+
+    ll x = b & -b;
+    ll y = b + x;
+    b = (((b ^ y) >> 2) / x) | y;
+}

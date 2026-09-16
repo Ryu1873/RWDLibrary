@@ -1,4 +1,5 @@
 #include<bits/stdc++.h>
+#include <cassert>
 using namespace std;
 #define ll long long
 const ll INF = 1'000'000'000'000'000'000LL;
@@ -8,7 +9,7 @@ const ll INF = 1'000'000'000'000'000'000LL;
 // コンストラクタ：LCATree tree(G, x) : Gは木、xは根。xを省略すると頂点0が根となる。前計算にO(NlogN)かかる。
 // lca(u, v): uとvのLCAを求める。O(logN)
 // dist(u, v): uとvの距離を求める。O(logN)
-// on_path(u, v, x): u,vを結ぶパス上にxがあるかを判定する。O(logN)
+// on_path(u, x, v): u,vを結ぶパス上にxがあるかを判定する。O(logN)
 struct LCATree {
 private:
     ll N, log2_N;
@@ -64,7 +65,7 @@ public:
         return depth[u] + depth[v] - 2 * depth[lca(u, v)];
     }
 
-    bool on_path(ll u, ll v, ll x) {
+    bool on_path(ll u, ll x, ll v) {
         assert(0 <= u && u < N && 0 <= v && v < N && 0 <= x && x < N);
         return dist(u, x) + dist(v, x) == dist(u, v);
     }
