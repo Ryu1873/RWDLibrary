@@ -156,6 +156,7 @@ tuple<ll, ll, ll> treeDiameter(vector<vector<ll>>& G) {
     return {dist[max_idx2], max_idx, max_idx2};
 }
 
+
 // 重み付きの木Gの直径を求める．
 // 返り値：{直径，直径の端点1，直径の端点2}．
 tuple<ll, ll, ll> weightedTreeDiameter(vector<vector<pll>>& G) {
@@ -178,7 +179,7 @@ tuple<ll, ll, ll> weightedTreeDiameter(vector<vector<pll>>& G) {
 
 // sから各点への最短距離を求める．
 // G：隣接リスト．要素は{辺のコスト，隣接頂点}
-vector<ll> dijkstra(ll s, vector<vector<pair<ll, ll>>>& G) {
+vector<ll> dijkstra(vector<vector<pair<ll, ll>>>& G, ll s = 0) {
     vector<ll> dist(G.size(), INF);
     priority_queue<pair<ll, ll>, vector<pair<ll, ll>>, greater<pll>> pq;
     pq.emplace(0, s);
@@ -197,6 +198,34 @@ vector<ll> dijkstra(ll s, vector<vector<pair<ll, ll>>>& G) {
         }
     }
     return dist;
+}
+
+
+// ベルマン・フォード法
+// 重みつきグラフにおいて，頂点sから各頂点への距離をO(N^2 + M)で求める．
+// Gはグラフの隣接リスト(重み，次の頂点の順)
+// 到達不可能な頂点はINF，負閉路がある場合は全頂点に-INFを格納．
+vector<ll> bellmanFord(vector<vector<pair<ll, ll>>>& G, ll s = 0) {
+    ll N = G.size();
+    vector<ll> D(N, INF);
+    D[s] = 0;
+    for (ll t = 0; t < N; t++) {
+        bool update = false;
+        for (ll v = 0; v < N; v++) {
+            for (auto [w, u] : G[v]) {
+                if (D[v] + w < D[u]) {
+                    D[u] = D[v] + w;
+                    update = true;
+                }
+            }
+        }
+        if (!update) {
+            break;
+        } else if (t == N-1) {
+            fill(D.begin(), D.end(), -INF);
+        }
+    }
+    return D;
 }
 
 

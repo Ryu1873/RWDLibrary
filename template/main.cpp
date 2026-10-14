@@ -1,3 +1,5 @@
+// https://github.com/Ryu1873/RWDLibrary
+
 #include<bits/stdc++.h>
 #include<atcoder/all>
 using namespace std;
@@ -12,7 +14,7 @@ using pll = pair<ll, ll>;
 using tll = tuple<ll, ll, ll>;
 using tll4 = tuple<ll, ll, ll, ll>;
 using vll = vector<ll>; using vvll = vector<vll>; using vvvll =  vector<vvll>;
-using vld = vector<ldb>; using vvld = vector<ldb>; using vvvdl = vector<vvld>;
+using vld = vector<ldb>; using vvld = vector<vld>; using vvvdl = vector<vvld>;
 using vch = vector<char>; using vvch = vector<vch>; using vvvch = vector<vvch>;
 using vst = vector<string>; using vvst = vector<vst>; using vvvst = vector<vvst>;
 using vbo = vector<bool>; using vvbo = vector<vbo>; using vvvbo = vector<vvbo>;
@@ -82,6 +84,7 @@ template<typename T, typename U> T CLOG(U n, T x) { T ret = 0, cur = 1; while(cu
 template<typename T> T SQRT(T n) { T x = (T)sqrt(n); while((x + 1) * (x + 1) <= n) { x++; } while(x * x > n) { x--; } return x; }
 template<typename T, typename U> bool BIT(T n, U i) { return (n >> i) & 1; }
 template<typename T> ll POPCNT(T n) { return popcount((unsigned long long)n); }
+template<typename T> ll MSB(T n) { return 64 - countl_zero((unsigned long long)n); } // 1-indexed(開区間)
 template<typename T> ll DIGSZ(T n) { return to_string(n).size(); }
 
 
