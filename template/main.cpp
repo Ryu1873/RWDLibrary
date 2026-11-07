@@ -109,6 +109,7 @@ template<typename C> bool ISPAL(C& V) { for (ll i = 0; i < (ll)V.size() / 2; i++
 // 幾何系マクロ
 template<typename T> bool INGRID(T x, T y, T H, T W) { return x >= 0 && x < H && y >= 0 && y < W; }
 template<typename C> vector<C> TRANSPOSE(vector<C>& G) { vector<C> H(G[0].size(), C(G.size(), 0)); for(ll i = 0; i < (ll)G[0].size(); i++) for(ll j = 0; j < (ll)G.size(); j++) H[i][j] = G[j][i]; return H; }
+template<typename C> vector<C> ROTATE(vector<C>& G, ll cnt = 1) { cnt = MOD(cnt, 4); vector<C> H(cnt % 2 == 1 ? G[0].size() : G.size(), C(cnt % 2 == 1 ? G.size() : G[0].size(), 0)); for(ll i = 0; i < (ll)H.size(); i++) for(ll j = 0; j < (ll)H[0].size(); j++) H[i][j] = G[cnt == 0 ? i : cnt == 1 ? (ll)G.size() - 1 - j : cnt == 2 ? (ll)G.size() - 1 - i : j][cnt == 0 ? j : cnt == 1 ? i : cnt == 2 ? (ll)G[0].size() - 1 - j : (ll)G[0].size() - 1 - i]; return H; }
 template<typename T> T EDIST(T x1, T y1, T x2, T y2) { return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2); }
 template<typename T> T MDIST(T x1, T y1, T x2, T y2) { return abs(x1 - x2) + abs(y1 - y2); }
 

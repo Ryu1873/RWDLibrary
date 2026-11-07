@@ -96,7 +96,7 @@ vector<ll> multiStartBFS(vector<ll>& starts, vector<vector<ll>>& G) {
 
 // 01-BFS．
 // G：隣接リスト．要素は{辺のコスト(0|1)，隣接頂点}
-vector<ll> BFS01(ll s, vector<vector<pair<ll, ll>>>& G) {
+vector<ll> BFS01(vector<vector<pair<ll, ll>>>& G, ll s = 0) {
     vector<ll> dist(G.size(), INF);
     deque<ll> deq;
     dist[s] = 0;
