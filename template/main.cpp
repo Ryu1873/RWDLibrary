@@ -60,8 +60,8 @@ template<class T, class... Ts> void CIN(T& x, Ts&... xs) { cin >> x; CIN(xs...);
 #define VVLL(...) VVEC(ll, __VA_ARGS__)
 #define UGRAPH(G, N, M) vector<vector<ll>> G(N); for (ll i = 0; i < M; i++) { ll u, v; cin >> u >> v; u--; v--; G[u].push_back(v); G[v].push_back(u); }
 #define DGRAPH(G, N, M) vector<vector<ll>> G(N); for (ll i = 0; i < M; i++) { ll u, v; cin >> u >> v; u--; v--; G[u].push_back(v); }
-#define WUGRAPH(G, N, M) vector<vector<pair<ll, ll>>> G(N); for (ll i = 0; i < M; i++) { ll u, v, w; cin >> u >> v >> w; u--; v--; G[u].emplace_back(w, v); G[v].emplace_back(w, u); }
-#define WDGRAPH(G, N, M) vector<vector<pair<ll, ll>>> G(N); for (ll i = 0; i < M; i++) { ll u, v, w; cin >> u >> v >> w; u--; v--; G[u].emplace_back(w, v); }
+#define WUGRAPH(G, N, M) vector<vector<pair<ll, ll>>> G(N); for (ll i = 0; i < M; i++) { ll u, v, w; cin >> u >> v >> w; u--; v--; G[u].emplace_back(v, w); G[v].emplace_back(u, w); }
+#define WDGRAPH(G, N, M) vector<vector<pair<ll, ll>>> G(N); for (ll i = 0; i < M; i++) { ll u, v, w; cin >> u >> v >> w; u--; v--; G[u].emplace_back(v, w); }
 
 // 出力
 const pair<string, string> YESNO_STRINGS = {"Yes", "No"};
