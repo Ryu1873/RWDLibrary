@@ -70,14 +70,14 @@ inline std::vector<long long> bfs(
 /**
  * @brief 重みなしグラフの単始点 BFS で最短距離を求める
  * @param g 隣接リスト (0-indexed, 頂点数 N)
- * @param start 始点 (0-indexed)
+ * @param start 始点 (0-indexed, デフォルト: 0)
  * @param inf 到達不可能を表す値 (デフォルト: 4e18)
  * @return 各頂点への最短距離配列 (到達不可能な頂点は inf)
  * @note 時間計算量: O(N + M), 空間計算量: O(N)
  */
 inline std::vector<long long> bfs(
     const std::vector<std::vector<long long>>& g,
-    long long start,
+    long long start = 0,
     long long inf = shortest_path_detail::default_inf<long long>()) {
     return bfs(g, std::vector<long long>{start}, inf);
 }
@@ -100,14 +100,14 @@ inline std::pair<std::vector<long long>, std::vector<long long>> bfs_with_parent
 /**
  * @brief 重みなしグラフの単始点 BFS で最短距離と親頂点配列を求める
  * @param g 隣接リスト (0-indexed, 頂点数 N)
- * @param start 始点 (0-indexed)
+ * @param start 始点 (0-indexed, デフォルト: 0)
  * @param inf 到達不可能を表す値 (デフォルト: 4e18)
  * @return {dist, parent} (到達不可能な頂点の dist は inf、始点および未到達頂点の parent は -1)
  * @note 時間計算量: O(N + M), 空間計算量: O(N)
  */
 inline std::pair<std::vector<long long>, std::vector<long long>> bfs_with_parent(
     const std::vector<std::vector<long long>>& g,
-    long long start,
+    long long start = 0,
     long long inf = shortest_path_detail::default_inf<long long>()) {
     return bfs_with_parent(g, std::vector<long long>{start}, inf);
 }

@@ -81,7 +81,7 @@ std::vector<T> dijkstra(
  * @brief 非負重み付きグラフの単始点ダイクストラ法で最短距離を求める
  * @tparam T 辺の重み・距離の型 (デフォルト: long long)
  * @param g 隣接リスト g[u] = {{v, weight}, ...} (0-indexed, 頂点数 N, weight >= 0)
- * @param start 始点 (0-indexed)
+ * @param start 始点 (0-indexed, デフォルト: 0)
  * @param inf 到達不可能を表す値 (デフォルト: long long の場合 4e18)
  * @return 各頂点への最短距離配列 (到達不可能な頂点は inf)
  * @note 前提: すべての辺の重みが非負であること。時間計算量: O((N + M) log N), 空間計算量: O(N + M)
@@ -89,7 +89,7 @@ std::vector<T> dijkstra(
 template <typename T = long long>
 std::vector<T> dijkstra(
     const std::vector<std::vector<std::pair<long long, T>>>& g,
-    long long start,
+    long long start = 0,
     std::type_identity_t<T> inf = shortest_path_detail::default_inf<T>()) {
     return dijkstra(g, std::vector<long long>{start}, inf);
 }
@@ -115,7 +115,7 @@ std::pair<std::vector<T>, std::vector<long long>> dijkstra_with_parent(
  * @brief 非負重み付きグラフの単始点ダイクストラ法で最短距離と親頂点配列を求める
  * @tparam T 辺の重み・距離の型 (デフォルト: long long)
  * @param g 隣接リスト g[u] = {{v, weight}, ...} (0-indexed, 頂点数 N, weight >= 0)
- * @param start 始点 (0-indexed)
+ * @param start 始点 (0-indexed, デフォルト: 0)
  * @param inf 到達不可能を表す値 (デフォルト: long long の場合 4e18)
  * @return {dist, parent} (到達不可能な頂点の dist は inf、始点および未到達頂点の parent は -1)
  * @note 前提: すべての辺の重みが非負であること。時間計算量: O((N + M) log N), 空間計算量: O(N + M)
@@ -123,7 +123,7 @@ std::pair<std::vector<T>, std::vector<long long>> dijkstra_with_parent(
 template <typename T = long long>
 std::pair<std::vector<T>, std::vector<long long>> dijkstra_with_parent(
     const std::vector<std::vector<std::pair<long long, T>>>& g,
-    long long start,
+    long long start = 0,
     std::type_identity_t<T> inf = shortest_path_detail::default_inf<T>()) {
     return dijkstra_with_parent(g, std::vector<long long>{start}, inf);
 }
