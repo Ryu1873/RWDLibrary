@@ -11,18 +11,20 @@
 #include <vector>
 
 /**
- * @brief 重複なし順序付き集合 (AVL木による平衡二分探索木)
+ * @brief 重複あり順序付き集合 (AVL木による平衡二分探索木)
  * @tparam T 要素の型 (デフォルト: long long)
  * @tparam Compare 狭義弱順序を表す比較関数型 (デフォルト: std::less<T>)
- * @note 挿入・削除・検索・k番目取得・区間個数取得をすべて最悪時間計算量 O(log N) で処理する。
+ * @note 各ノードで同値要素の個数を管理し、挿入・削除・検索・k番目取得・区間個数取得を
+ *       すべて最悪時間計算量 O(log N) で処理する。
  */
 template <typename T = long long, typename Compare = std::less<T>>
-class OrderedSet {
+class OrderedMultiSet {
 private:
     struct Node {
         T key;
         long long left = -1;
         long long right = -1;
+        long long cnt = 1;
         long long size = 1;
         long long height = 1;
     };
@@ -32,23 +34,23 @@ public:
     using key_compare = Compare;
 
     /**
-     * @brief 空の OrderedSet を構築する
+     * @brief 空の OrderedMultiSet を構築する
      */
-    OrderedSet() = default;
+    OrderedMultiSet() = default;
 
     /**
-     * @brief 指定した比較関数で空の OrderedSet を構築する
+     * @brief 指定した比較関数で空の OrderedMultiSet を構築する
      * @param comp 比較関数
      */
-    explicit OrderedSet(Compare comp) : comp_(std::move(comp)) {}
+    explicit OrderedMultiSet(Compare comp) : comp_(std::move(comp)) {}
 
     /**
-     * @brief 初期化リストから OrderedSet を構築する
-     * @param init 初期要素列
+     * @brief 初期化リストから OrderedMultiSet を構築する
+     * @param init 初期要素列 (重複を含む場合すべて格納される)
      * @param comp 比較関数
      * @note 時間計算量: O(|init| log |init|)
      */
-    OrderedSet(std::initializer_list<T> init, Compare comp = Compare())
+    OrderedMultiSet(std::initializer_list<T> init, Compare comp = Compare())
         : comp_(std::move(comp)) {
         reserve(static_cast<long long>(init.size()));
         for (const auto& x : init) {
@@ -57,14 +59,14 @@ public:
     }
 
     /**
-     * @brief イテレータ範囲 [first, last) から OrderedSet を構築する
+     * @brief イテレータ範囲 [first, last) から OrderedMultiSet を構築する
      * @tparam InputIt 入力イテレータ型
      * @param first 先頭イテレータ
      * @param last 末尾イテレータ
      * @param comp 比較関数
      */
     template <typename InputIt>
-    OrderedSet(InputIt first, InputIt last, Compare comp = Compare())
+    OrderedMultiSet(InputIt first, InputIt last, Compare comp = Compare())
         : comp_(std::move(comp)) {
         for (; first != last; ++first) {
             insert(*first);
@@ -72,7 +74,7 @@ public:
     }
 
     /**
-     * @brief 格納されている要素数を返す
+     * @brief 格納されている総要素数 (重複を含む) を返す
      * @note 時間計算量: O(1)
      */
     long long size() const noexcept { return node_size(root_); }
@@ -103,54 +105,62 @@ public:
     }
 
     /**
-     * @brief 要素 x を挿入する (既に存在する場合は何もしない)
+     * @brief 要素 x を 1 つ挿入する (重複を許容する)
      * @param x 挿入する値
-     * @return 新規挿入された場合 true、既に存在した場合 false
      * @note 時間計算量: O(log N)
      */
-    bool insert(const T& x) {
-        bool inserted = false;
-        root_ = insert_impl(root_, x, inserted);
-        return inserted;
+    void insert(const T& x) {
+        bool height_changed = false;
+        root_ = insert_impl(root_, x, height_changed);
     }
 
     /**
-     * @brief 要素 x をムーブして挿入する (既に存在する場合は何もしない)
+     * @brief 要素 x をムーブして 1 つ挿入する (重複を許容する)
      * @param x 挿入する値
-     * @return 新規挿入された場合 true、既に存在した場合 false
      * @note 時間計算量: O(log N)
      */
-    bool insert(T&& x) {
-        bool inserted = false;
-        root_ = insert_impl(root_, std::move(x), inserted);
-        return inserted;
+    void insert(T&& x) {
+        bool height_changed = false;
+        root_ = insert_impl(root_, std::move(x), height_changed);
     }
 
     /**
-     * @brief 引数から要素を直接構築して挿入する
-     * @return 新規挿入された場合 true、既に存在した場合 false
+     * @brief 引数から要素を直接構築して 1 つ挿入する
      * @note 時間計算量: O(log N)
      */
     template <typename... Args>
-    bool emplace(Args&&... args) {
+    void emplace(Args&&... args) {
         T val(std::forward<Args>(args)...);
-        return insert(std::move(val));
+        insert(std::move(val));
     }
 
     /**
-     * @brief 要素 x を削除する (存在しない場合は何もしない)
+     * @brief 要素 x を 1 つだけ削除する (存在しない場合は何もしない)
      * @param x 削除する値
      * @return 削除された場合 true、存在しなかった場合 false
      * @note 時間計算量: O(log N)
      */
     bool erase(const T& x) {
         bool erased = false;
-        root_ = erase_impl(root_, x, erased);
+        bool node_removed = false;
+        root_ = erase_impl(root_, x, erased, node_removed);
         return erased;
     }
 
     /**
-     * @brief 0-indexed で k 番目の要素を削除して返す
+     * @brief 要素 x をすべて削除する
+     * @param x 削除する値
+     * @return 削除した個数
+     * @note 時間計算量: O(log N)
+     */
+    long long erase_all(const T& x) {
+        long long removed_cnt = 0;
+        root_ = erase_all_impl(root_, x, removed_cnt);
+        return removed_cnt;
+    }
+
+    /**
+     * @brief 0-indexed で k 番目の要素を 1 つだけ削除して返す
      * @param k 削除する要素の順位 (0-indexed)
      * @return k が範囲内なら削除された要素、範囲外なら std::nullopt
      * @note 時間計算量: O(log N)
@@ -158,16 +168,24 @@ public:
     std::optional<T> erase_kth(long long k) {
         if (k < 0 || k >= size()) return std::nullopt;
         std::optional<T> removed;
-        root_ = erase_kth_impl(root_, k, removed);
+        bool node_removed = false;
+        root_ = erase_kth_impl(root_, k, removed, node_removed);
         return removed;
     }
 
     /**
-     * @brief 要素 x が集合に含まれるかを判定する
+     * @brief 要素 x が集合に 1 つ以上含まれるかを判定する
      * @param x 検索する値
      * @note 時間計算量: O(log N)
      */
-    bool contains(const T& x) const {
+    bool contains(const T& x) const { return count(x) > 0; }
+
+    /**
+     * @brief 要素 x の個数を返す
+     * @param x 検索する値
+     * @note 時間計算量: O(log N)
+     */
+    long long count(const T& x) const {
         long long cur = root_;
         while (cur != -1) {
             if (comp_(x, nodes_[cur].key)) {
@@ -175,18 +193,11 @@ public:
             } else if (comp_(nodes_[cur].key, x)) {
                 cur = nodes_[cur].right;
             } else {
-                return true;
+                return nodes_[cur].cnt;
             }
         }
-        return false;
+        return 0;
     }
-
-    /**
-     * @brief 要素 x の個数 (0 または 1) を返す
-     * @param x 検索する値
-     * @note 時間計算量: O(log N)
-     */
-    long long count(const T& x) const { return contains(x) ? 1 : 0; }
 
     /**
      * @brief 0-indexed で k 番目に小さい要素を返す
@@ -309,16 +320,16 @@ public:
     }
 
     /**
-     * @brief x 未満の要素数を返す (comp_(e, x) を満たす要素 e の個数)
+     * @brief x 未満の要素数 (重複を含む) を返す (comp_(e, x) を満たす要素 e の個数)
      * @param x 基準値
-     * @note x が存在する場合、x の 0-indexed 順位と一致する。時間計算量: O(log N)
+     * @note 時間計算量: O(log N)
      */
     long long count_less(const T& x) const {
         long long cur = root_;
         long long cnt = 0;
         while (cur != -1) {
             if (comp_(nodes_[cur].key, x)) {
-                cnt += 1 + node_size(nodes_[cur].left);
+                cnt += nodes_[cur].cnt + node_size(nodes_[cur].left);
                 cur = nodes_[cur].right;
             } else {
                 cur = nodes_[cur].left;
@@ -328,7 +339,7 @@ public:
     }
 
     /**
-     * @brief x 以下の要素数を返す (!comp_(x, e) を満たす要素 e の個数)
+     * @brief x 以下の要素数 (重複を含む) を返す (!comp_(x, e) を満たす要素 e の個数)
      * @param x 基準値
      * @note 時間計算量: O(log N)
      */
@@ -337,7 +348,7 @@ public:
         long long cnt = 0;
         while (cur != -1) {
             if (!comp_(x, nodes_[cur].key)) {
-                cnt += 1 + node_size(nodes_[cur].left);
+                cnt += nodes_[cur].cnt + node_size(nodes_[cur].left);
                 cur = nodes_[cur].right;
             } else {
                 cur = nodes_[cur].left;
@@ -347,7 +358,7 @@ public:
     }
 
     /**
-     * @brief x 以上の要素数を返す (!comp_(e, x) を満たす要素 e の個数)
+     * @brief x 以上の要素数 (重複を含む) を返す (!comp_(e, x) を満たす要素 e の個数)
      * @param x 基準値
      * @note 時間計算量: O(log N)
      */
@@ -356,7 +367,7 @@ public:
     }
 
     /**
-     * @brief x より大きい要素数を返す (comp_(x, e) を満たす要素 e の個数)
+     * @brief x より大きい要素数 (重複を含む) を返す (comp_(x, e) を満たす要素 e の個数)
      * @param x 基準値
      * @note 時間計算量: O(log N)
      */
@@ -365,7 +376,7 @@ public:
     }
 
     /**
-     * @brief L 以上 R 未満の要素数を返す (半開区間 [l, r))
+     * @brief L 以上 R 未満の要素数 (重複を含む) を返す (半開区間 [l, r))
      * @param l 下限 (含む)
      * @param r 上限 (含まない)
      * @return !comp_(e, l) && comp_(e, r) を満たす要素 e の個数 (l >= r の場合は 0)
@@ -377,7 +388,7 @@ public:
     }
 
     /**
-     * @brief 全要素を昇順 (comp_ 順) の std::vector として返す
+     * @brief 全要素 (重複を含む) を昇順 (comp_ 順) の std::vector として返す
      * @note 時間計算量: O(N)
      */
     std::vector<T> to_vector() const {
@@ -403,7 +414,7 @@ private:
 
     void pull(long long t) noexcept {
         nodes_[t].size =
-            1 + node_size(nodes_[t].left) + node_size(nodes_[t].right);
+            nodes_[t].cnt + node_size(nodes_[t].left) + node_size(nodes_[t].right);
         nodes_[t].height =
             1 + std::max(node_height(nodes_[t].left), node_height(nodes_[t].right));
     }
@@ -420,12 +431,13 @@ private:
             nodes_[idx].key = std::forward<U>(key);
             nodes_[idx].left = -1;
             nodes_[idx].right = -1;
+            nodes_[idx].cnt = 1;
             nodes_[idx].size = 1;
             nodes_[idx].height = 1;
             return idx;
         }
         long long idx = static_cast<long long>(nodes_.size());
-        nodes_.push_back(Node{std::forward<U>(key), -1, -1, 1, 1});
+        nodes_.push_back(Node{std::forward<U>(key), -1, -1, 1, 1, 1});
         return idx;
     }
 
@@ -475,22 +487,29 @@ private:
     }
 
     template <typename U>
-    long long insert_impl(long long t, U&& key, bool& inserted) {
+    long long insert_impl(long long t, U&& key, bool& height_changed) {
         if (t == -1) {
-            inserted = true;
+            height_changed = true;
             return new_node(std::forward<U>(key));
         }
         if (comp_(key, nodes_[t].key)) {
-            long long child = insert_impl(nodes_[t].left, std::forward<U>(key), inserted);
+            long long child =
+                insert_impl(nodes_[t].left, std::forward<U>(key), height_changed);
             nodes_[t].left = child;
         } else if (comp_(nodes_[t].key, key)) {
-            long long child = insert_impl(nodes_[t].right, std::forward<U>(key), inserted);
+            long long child =
+                insert_impl(nodes_[t].right, std::forward<U>(key), height_changed);
             nodes_[t].right = child;
         } else {
-            inserted = false;
+            nodes_[t].cnt += 1;
+            nodes_[t].size += 1;
+            height_changed = false;
             return t;
         }
-        if (!inserted) return t;
+        if (!height_changed) {
+            pull(t);
+            return t;
+        }
         return rebalance(t);
     }
 
@@ -522,32 +541,74 @@ private:
         return rebalance(min_node);
     }
 
-    long long erase_impl(long long t, const T& key, bool& erased) {
-        if (t == -1) return -1;
+    long long erase_impl(long long t, const T& key, bool& erased, bool& node_removed) {
+        if (t == -1) {
+            erased = false;
+            node_removed = false;
+            return -1;
+        }
         if (comp_(key, nodes_[t].key)) {
-            nodes_[t].left = erase_impl(nodes_[t].left, key, erased);
+            nodes_[t].left = erase_impl(nodes_[t].left, key, erased, node_removed);
         } else if (comp_(nodes_[t].key, key)) {
-            nodes_[t].right = erase_impl(nodes_[t].right, key, erased);
+            nodes_[t].right = erase_impl(nodes_[t].right, key, erased, node_removed);
         } else {
             erased = true;
+            if (nodes_[t].cnt > 1) {
+                nodes_[t].cnt -= 1;
+                nodes_[t].size -= 1;
+                node_removed = false;
+                return t;
+            }
+            node_removed = true;
             return remove_node(t);
         }
         if (!erased) return t;
+        if (!node_removed) {
+            pull(t);
+            return t;
+        }
         return rebalance(t);
     }
 
-    long long erase_kth_impl(long long t, long long k, std::optional<T>& removed) {
+    long long erase_all_impl(long long t, const T& key, long long& removed_cnt) {
+        if (t == -1) return -1;
+        if (comp_(key, nodes_[t].key)) {
+            nodes_[t].left = erase_all_impl(nodes_[t].left, key, removed_cnt);
+        } else if (comp_(nodes_[t].key, key)) {
+            nodes_[t].right = erase_all_impl(nodes_[t].right, key, removed_cnt);
+        } else {
+            removed_cnt = nodes_[t].cnt;
+            return remove_node(t);
+        }
+        if (removed_cnt == 0) return t;
+        return rebalance(t);
+    }
+
+    long long erase_kth_impl(
+        long long t, long long k, std::optional<T>& removed, bool& node_removed) {
         long long left_sz = node_size(nodes_[t].left);
         if (k < left_sz) {
-            nodes_[t].left = erase_kth_impl(nodes_[t].left, k, removed);
-            return rebalance(t);
+            nodes_[t].left = erase_kth_impl(nodes_[t].left, k, removed, node_removed);
+        } else if (k >= left_sz + nodes_[t].cnt) {
+            nodes_[t].right = erase_kth_impl(
+                nodes_[t].right, k - left_sz - nodes_[t].cnt, removed, node_removed);
+        } else {
+            if (nodes_[t].cnt > 1) {
+                removed.emplace(nodes_[t].key);
+                nodes_[t].cnt -= 1;
+                nodes_[t].size -= 1;
+                node_removed = false;
+                return t;
+            }
+            removed.emplace(std::move(nodes_[t].key));
+            node_removed = true;
+            return remove_node(t);
         }
-        if (k > left_sz) {
-            nodes_[t].right = erase_kth_impl(nodes_[t].right, k - left_sz - 1, removed);
-            return rebalance(t);
+        if (!node_removed) {
+            pull(t);
+            return t;
         }
-        removed.emplace(std::move(nodes_[t].key));
-        return remove_node(t);
+        return rebalance(t);
     }
 
     const T* find_kth_ptr(long long k) const noexcept {
@@ -557,8 +618,8 @@ private:
             long long left_sz = node_size(nodes_[cur].left);
             if (k < left_sz) {
                 cur = nodes_[cur].left;
-            } else if (k > left_sz) {
-                k -= left_sz + 1;
+            } else if (k >= left_sz + nodes_[cur].cnt) {
+                k -= left_sz + nodes_[cur].cnt;
                 cur = nodes_[cur].right;
             } else {
                 return &nodes_[cur].key;
@@ -570,7 +631,9 @@ private:
     void inorder(long long t, std::vector<T>& out) const {
         if (t == -1) return;
         inorder(nodes_[t].left, out);
-        out.push_back(nodes_[t].key);
+        for (long long i = 0; i < nodes_[t].cnt; ++i) {
+            out.push_back(nodes_[t].key);
+        }
         inorder(nodes_[t].right, out);
     }
 };
