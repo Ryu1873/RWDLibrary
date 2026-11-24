@@ -78,9 +78,38 @@ void READ_TREE(ll n, vvll& g) { READ_GRAPH<false>(n, n - 1, g); }
 
 // 出力
 const pair<string, string> YESNO_STRINGS = {"Yes", "No"};
-template<class T, class... Ts> void PR(const T& a, const Ts&... b) { cout << a; ((cout << ' ' << b), ...); cout << '\n'; }
-template<class... Ts> void PRS(const Ts&... a) { ((cout << a << ' '), ...); }
-template<typename Container> void PRC(const Container& c) { bool first = true; for (const auto& x : c) {if (!first) {cout << ' ';} cout << x; first = false; } cout << '\n'; }
+template<class T> void PR_ONE(const T& x) {
+    if constexpr (same_as<remove_cvref_t<T>, i128>) {
+        if (x == 0) { cout << '0'; }
+        else {
+            unsigned __int128 u = x < 0 ? (cout << '-', -(unsigned __int128)x) : (unsigned __int128)x;
+            string s;
+            while (u > 0) { s.push_back(char('0' + u % 10)); u /= 10; }
+            reverse(s.begin(), s.end());
+            cout << s;
+        }
+    } else if constexpr (requires { cout << x; }) {
+        cout << x;
+    } else if constexpr (requires { cout << x.val(); }) {
+        cout << x.val();
+    } else if constexpr (requires { x.first; x.second; }) {
+        PR_ONE(x.first); cout << ' '; PR_ONE(x.second);
+    } else if constexpr (ranges::range<T>) {
+        using E = ranges::range_value_t<T>;
+        constexpr char sep = (ranges::range<E> && !requires(const E& e) { cout << e; }) ? '\n' : ' ';
+        bool first = true;
+        for (const auto& e : x) {
+            if (!first) cout << sep;
+            PR_ONE(e);
+            first = false;
+        }
+    } else {
+        static_assert(false, "unsupported type for PR");
+    }
+}
+void PR() { cout << '\n'; }
+template<class T, class... Ts> void PR(const T& a, const Ts&... b) { PR_ONE(a); ((cout << ' ', PR_ONE(b)), ...); cout << '\n'; }
+template<class... Ts> void PRS(const Ts&... a) { ((PR_ONE(a), cout << ' '), ...); }
 #define YES PR(YESNO_STRINGS.first)
 #define NO PR(YESNO_STRINGS.second)
 bool YN(bool f) { if (f) { YES; return true; } NO; return false; }
