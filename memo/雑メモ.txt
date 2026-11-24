@@ -1,6 +1,9 @@
 # テンプレート設定方法
-初回のみ以下のシンボリックリンクを作成しておけば，以後は template/main.cpp の編集だけで自動反映される．
-ln -sf ~/kyopro/RWDLibrary/template/main.cpp ~/Library/Preferences/atcoder-cli-nodejs/cpp/main.cpp
+以下の 2 箇所で通常ファイルとして自動コピーされる（atcoder-cli がシンボリックリンクをそのまま複製するため通常ファイルで配置する）．
+- ~/.zshrc の mk() 実行時（acc new の直前）
+- .git/hooks/post-commit および post-merge（commit / git pull 時）
+手動で反映する場合:
+rm -f ~/Library/Preferences/atcoder-cli-nodejs/cpp/main.cpp && cp ~/kyopro/RWDLibrary/template/main.cpp ~/Library/Preferences/atcoder-cli-nodejs/cpp/main.cpp
 
 # ログインのセッション再接続
 1.atcoderにブラウザからログインし，f12→application→cookies→https://atcoder.jp→REVEL_SESSIONの値をコピー
