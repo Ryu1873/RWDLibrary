@@ -34,7 +34,6 @@ using vtll4 = vector<tll4>; using vvtll4 = vector<vtll4>; using vvvtll4 = vector
 #define CAT_IMPL(a, b) a##b
 #define CAT(a, b) CAT_IMPL(a, b)
 #define OVERLOAD4(a, b, c, d, e, ...) e
-#define OVERLOAD6(a, b, c, d, e, f, g, ...) g
 
 // rep系
 #define REP1_IMPL(i, n) for(ll i = 0; i < (n); i++)
@@ -57,22 +56,25 @@ template<class T, class... Ts> void CIN(T& x, Ts&... xs) { cin >> x; CIN(xs...);
 #define LDB(...) ldb __VA_ARGS__; CIN(__VA_ARGS__)
 #define CHAR(...) char __VA_ARGS__; CIN(__VA_ARGS__)
 #define STR(...) string __VA_ARGS__; CIN(__VA_ARGS__)
-#define VEC3(type, name, N) vector<type> name(N); for(auto& _x : name) cin >> _x
-#define VEC4(type, name1, name2, N) vector<type> name1(N), name2(N); for(ll _i = 0; _i < (N); _i++) cin >> name1[_i] >> name2[_i]
-#define VEC5(type, name1, name2, name3, N) vector<type> name1(N), name2(N), name3(N); for(ll _i = 0; _i < (N); _i++) cin >> name1[_i] >> name2[_i] >> name3[_i]
-#define VEC6(type, name1, name2, name3, name4, N) vector<type> name1(N), name2(N), name3(N), name4(N); for(ll _i = 0; _i < (N); _i++) cin >> name1[_i] >> name2[_i] >> name3[_i] >> name4[_i]
-#define VEC(...) OVERLOAD6(__VA_ARGS__, VEC6, VEC5, VEC4, VEC3)(__VA_ARGS__)
+template<class... Ts> void READ_VECS(ll n, Ts&... vs) { (vs.resize(n), ...); for (ll i = 0; i < n; i++) (cin >> ... >> vs[i]); }
+#define VEC(type, N, ...) vector<type> __VA_ARGS__; READ_VECS(N, __VA_ARGS__)
 #define VLL(...) VEC(ll, __VA_ARGS__)
 #define VLD(...) VEC(ldb, __VA_ARGS__)
 #define VST(...) VEC(string, __VA_ARGS__)
-#define VVEC4(type, name, N, M) vector<vector<type>> name(N, vector<type>(M)); for(auto& _v : name) for(auto& _x : _v) cin >> _x
-#define VVEC3(type, name, N) VVEC4(type, name, N, N)
+template<class T> void READ_VVEC(ll n, ll m, vector<vector<T>>& a) { a.assign(n, vector<T>(m)); for (auto& v : a) for (auto& x : v) cin >> x; }
+template<class T> void READ_VVEC(ll n, vector<vector<T>>& a) { READ_VVEC(n, n, a); }
+#define VVEC4(type, N, M, name) vector<vector<type>> name; READ_VVEC(N, M, name)
+#define VVEC3(type, N, name) vector<vector<type>> name; READ_VVEC(N, name)
 #define VVEC(...) OVERLOAD4(__VA_ARGS__, VVEC4, VVEC3)(__VA_ARGS__)
 #define VVLL(...) VVEC(ll, __VA_ARGS__)
-#define UGRAPH(G, N, M) vector<vector<ll>> G(N); for (ll _i = 0; _i < (M); _i++) { ll _u, _v; cin >> _u >> _v; _u--; _v--; G[_u].push_back(_v); G[_v].push_back(_u); }
-#define DGRAPH(G, N, M) vector<vector<ll>> G(N); for (ll _i = 0; _i < (M); _i++) { ll _u, _v; cin >> _u >> _v; _u--; _v--; G[_u].push_back(_v); }
-#define WUGRAPH(G, N, M) vector<vector<pair<ll, ll>>> G(N); for (ll _i = 0; _i < (M); _i++) { ll _u, _v, _w; cin >> _u >> _v >> _w; _u--; _v--; G[_u].emplace_back(_v, _w); G[_v].emplace_back(_u, _w); }
-#define WDGRAPH(G, N, M) vector<vector<pair<ll, ll>>> G(N); for (ll _i = 0; _i < (M); _i++) { ll _u, _v, _w; cin >> _u >> _v >> _w; _u--; _v--; G[_u].emplace_back(_v, _w); }
+template<bool directed> void READ_GRAPH(ll n, ll m, vvll& g) { g.assign(n, {}); for (ll i = 0; i < m; i++) { ll u, v; cin >> u >> v; u--; v--; g[u].push_back(v); if constexpr (!directed) g[v].push_back(u); } }
+template<bool directed> void READ_WGRAPH(ll n, ll m, vvpll& g) { g.assign(n, {}); for (ll i = 0; i < m; i++) { ll u, v, w; cin >> u >> v >> w; u--; v--; g[u].emplace_back(v, w); if constexpr (!directed) g[v].emplace_back(u, w); } }
+void READ_TREE(ll n, vvll& g) { READ_GRAPH<false>(n, n - 1, g); }
+#define UGRAPH(N, M, G) vvll G; READ_GRAPH<false>(N, M, G)
+#define DGRAPH(N, M, G) vvll G; READ_GRAPH<true>(N, M, G)
+#define WUGRAPH(N, M, G) vvpll G; READ_WGRAPH<false>(N, M, G)
+#define WDGRAPH(N, M, G) vvpll G; READ_WGRAPH<true>(N, M, G)
+#define TREE(N, G) vvll G; READ_TREE(N, G)
 
 // 出力
 const pair<string, string> YESNO_STRINGS = {"Yes", "No"};
