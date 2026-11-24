@@ -198,7 +198,7 @@ while [ "$MAX_CASES" -eq 0 ] || [ "$CASE_NUM" -lt "$MAX_CASES" ]; do
     show_preview "checker message" checker_err.txt
     show_preview "input (in.txt)" in.txt
     show_preview "output (out1.txt)" out1.txt
-    echo "${C_CYAN}Reproduce:${C_RESET} ./main < in.txt && ./checker in.txt out1.txt"
+    echo "${C_CYAN}Reproduce:${C_RESET} ./main < in.txt > out1.txt && ./checker in.txt out1.txt"
     exit 1
   fi
 
