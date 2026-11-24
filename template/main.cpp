@@ -92,17 +92,24 @@ template<class T> void PR_ONE(const T& x) {
         cout << x;
     } else if constexpr (requires { cout << x.val(); }) {
         cout << x.val();
-    } else if constexpr (requires { x.first; x.second; }) {
-        PR_ONE(x.first); cout << ' '; PR_ONE(x.second);
     } else if constexpr (ranges::range<T>) {
-        using E = ranges::range_value_t<T>;
-        constexpr char sep = (ranges::range<E> && !requires(const E& e) { cout << e; }) ? '\n' : ' ';
+        using E = remove_cvref_t<ranges::range_value_t<T>>;
+        constexpr char sep = ((ranges::range<E> && !requires(const E& e) { cout << e; }) || requires { tuple_size<E>::value; }) ? '\n' : ' ';
         bool first = true;
         for (const auto& e : x) {
             if (!first) cout << sep;
             PR_ONE(e);
             first = false;
         }
+    } else if constexpr (requires { tuple_size<remove_cvref_t<T>>::value; }) {
+        apply([](const auto&... elems) {
+            if constexpr (sizeof...(elems) > 0) {
+                [](const auto& head, const auto&... tail) {
+                    PR_ONE(head);
+                    ((cout << ' ', PR_ONE(tail)), ...);
+                }(elems...);
+            }
+        }, x);
     } else {
         static_assert(false, "unsupported type for PR");
     }
